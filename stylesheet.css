@@ -112,6 +112,16 @@ ul {
     list-style: none;
 }
 
+.error {
+    color: #d9534f;
+    background-color: #f2dede;
+    border: 1px solid #ebccd1;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
 /* Header and Navigation */
 header {
     background-color: var(--color-secondary);
@@ -221,6 +231,9 @@ main {
 }
 
 /* Carousel */
+.carousel {
+    position: relative;
+}
 #carousel .carousel-container {
     background-color: var(--color-secondary);
     padding: 1rem;
@@ -228,12 +241,49 @@ main {
     min-height: 150px;
 }
 
-.carousel {
-    display: non;
+.slick-slide {
+    display: flex !important;
+    justify-content: center;
+    align-items: stretch;
+    height: auto !important;
 }
 
-.slick-slide {
-    padding: 10px;
+.slick-track {
+    display: flex !important;
+    align-items: stretch;
+}
+
+.slick-prev, .slick-next {
+    width: 40px;
+    height: 40px;
+    z-index: 10;
+    background-color: var(--color-accent);
+    border-radius: 50%;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-size: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.slick-prev:before, .slick-next:before {
+    font-family: 'slick';
+    font-size: 20px;
+    color: #fff;
+    opacity: 1;
+}
+
+.slick-prev:hover, .slick-next:hover {
+    background-color: var(--color-primary);
+}
+
+.slick-prev {
+    left: -50px;
+}
+
+.slick-next {
+    right: -50px; 
 }
 
 .book {
@@ -245,13 +295,15 @@ main {
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
 }
 
 .book img {
     max-width: 100px;
     height: auto;
-    margin: 0 auto 10px;
+    margin: 0 auto;
 }
 
 .book p {
@@ -338,6 +390,22 @@ main {
     background-color: #fff;
     padding: 1rem;
     border-radius: 6px;
+    text-align: center;
+}
+
+#book-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.book-thumbnail {
+    max-width: 150px;
+    margin-bottom: 1rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .hidden {

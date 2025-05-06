@@ -1,7 +1,7 @@
 "use strict";
 
 $(document).ready(function(){
-    const url = "https://www.googleapis.com/books/v1/volumes?q=bestsellers&maxResults=10";
+    const url = "https://www.googleapis.com/books/v1/volumes?q=popular+books&maxResults=10";
 
     // loading books from google books API
     function loadBooks() {
@@ -32,7 +32,8 @@ $(document).ready(function(){
                 slidesToShow: 3,
                 slidesToScroll: 1,
                 arrows: true,
-                infinite: true
+                infinite: true,
+                touchMove: true
             });
         });
     }
@@ -54,6 +55,7 @@ $(document).ready(function(){
         readingListContainer.empty();
 
         const savedBooks = JSON.parse(localStorage.getItem("readingList"));
+        if (!savedBooks) return;
         Object.values(savedBooks).forEach(book => {
             const bookListItem = `<li>
                                 <img src="${book.thumbnail}" alt="${book.title}"/>
@@ -62,14 +64,66 @@ $(document).ready(function(){
             readingListContainer.append(bookListItem);
         });
     }
+    // Error Messages
+    function showError(message) {
+        $("#book-details").html(`<p class="error">${message}</p>`);
+    }
+    // Random Book Generating function from the Genre Section
+    function randomBookGenre(genre){
+        const apiKey = "AIzaSyA84hX77WlQiUgQEbnDYGEI_Fnmh0H8-bI";
+        const url = `https://www.googleapis.com/books/v1/volumes?q=subject:${genre}&key=${apiKey}`;
 
-    // Event Listener for save button
-    $document.on("click", ".save-book", function(){
+        $.get(url).done(function(data){
+                if (data.items && data.items.length > 0) {
+                    const randomBook = data.items[Math.floor(Math.random() * data.items.length)];
+                    displayBookDetails(randomBook);
+                } else {
+                    showError("No books found for this genre.");
+                }
+            }).fail(function (jqHXR, errorThrown){
+                showError("Could not fetch data from Google Books API. Please try again");
+                console.error("Error details: ", errorThrown);
+            });
+    }
+
+    function displayBookDetails(book) {
+        const bookInfo = book.volumeInfo;
+        const bookTitle = bookInfo.title;
+        const bookAuthors = bookInfo.authors.join(",");
+        const bookDescription = bookInfo.description;
+        const bookThumbnail = bookInfo.imageLinks?.thumbnail;
+
+        // displaying the book
+        let bookDetailsHtml = "";
+        
+        if (bookThumbnail) {
+            bookDetailsHtml += `<img src="${bookThumbnail}" alt="${bookTitle}" class="book-thumbnail" />`;
+        }
+        
+        bookDetailsHtml +=  `<h4>${bookTitle}</h4>
+                            <p>by ${bookAuthors}</p>
+                            <p>${bookDescription}</p>`;
+        
+        $("#book-details").html(bookDetailsHtml);
+        // remove hidden class
+        $("#random-book").removeClass("hidden");
+    }
+
+    // Event Listener for save button in the reading list
+    $(document).on("click", ".save-book", function(){
         const bookElement = $(this).closest(".book");
         const bookData = bookElement.data("book");
         saveBook(bookData);
     });
 
-    // loadBooks();
-    // renderReadingList();
+    // Event Listener for clicking on the genre card
+    $(document).on("click", ".genre-card", function(){
+        const genre = $(this).data("genre");
+        console.log("Genre clicked:", genre);
+        randomBookGenre(genre);
+    });
+
+
+    loadBooks();
+    loadReadingList();
 });
