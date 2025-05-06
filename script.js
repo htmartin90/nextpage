@@ -1,6 +1,12 @@
 "use strict";
 
 $(document).ready(function(){
+    // Accordian from jQuery UI
+    $("#reading-tools").accordion({
+        collapsible: true,
+        heightStyle: "content"
+    });
+    
     const url = "https://www.googleapis.com/books/v1/volumes?q=popular+books&maxResults=10";
 
     // loading books from google books API
@@ -33,9 +39,15 @@ $(document).ready(function(){
                 slidesToScroll: 1,
                 arrows: true,
                 infinite: true,
-                touchMove: true
+                touchMove: true,
+                prevArrow: '<button type="button" class="slick-prev custom-arrow"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></button>',
+                nextArrow: '<button type="button" class="slick-next custom-arrow"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" viewBox="0 0 24 24"><path d="M8.59 16.59 10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg></button>'
             });
         });
+    }
+    // check local storage to see if there is already a value stored
+    if(!localStorage.getItem("readingList")){
+        localStorage.setItem("readingList", JSON.stringify({}));
     }
 
     // Saving to Reading list in local storage
@@ -54,15 +66,20 @@ $(document).ready(function(){
         const readingListContainer = $("#reading-list-container");
         readingListContainer.empty();
 
-        const savedBooks = JSON.parse(localStorage.getItem("readingList"));
+        let savedBooks = localStorage.getItem("readingList");
         if (!savedBooks) return;
-        Object.values(savedBooks).forEach(book => {
-            const bookListItem = `<li>
-                                <img src="${book.thumbnail}" alt="${book.title}"/>
-                                <span>${book.title}</span>
-                                </li>`;
-            readingListContainer.append(bookListItem);
-        });
+        try{
+            savedBooks = JSON.parse(savedBooks);
+            Object.values(savedBooks).forEach(book => {
+                const bookListItem = `<li>
+                                    <img src="${book.thumbnail}" alt="${book.title}"/>
+                                    <span>${book.title}</span>
+                                    </li>`;
+                readingListContainer.append(bookListItem);
+            });
+        }catch(e){
+            console.error("Error parsing readingList from localStorage", e);
+        }
     }
     // Error Messages
     function showError(message) {
