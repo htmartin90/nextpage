@@ -153,6 +153,8 @@ header {
 }
 
 /* Hero Section */
+
+/* hero image taken from google images: https://www.bhg.com/thmb/DmtbNkaqGpTTqEuCkxCSgBziuyU=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/7702_211203_Meredith_preview-101f24dcc63840acb30634af667bdd5c.jpg  */
 #hero {
     background: url('images/hero.png') center/cover no-repeat;
     color: var(--color-background);
